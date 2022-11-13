@@ -1,36 +1,47 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider/AuthProvider";
 
-const Login = () => {
+const SignUp = () => {
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
 
-  const { signIn } = useContext(AuthContext);
-
-  const [loginError, setLoginError] = useState("");
+  const { createUser } = useContext(AuthContext);
 
   const handleLogin = (data) => {
-    setLoginError("");
-    signIn(data.email, data.password)
+    console.log(data);
+    createUser(data.email, data.password)
       .then((result) => {
         const user = result.user;
         console.log(user);
       })
-      .catch((error) => {
-        console.error(error);
-        setLoginError(error.message);
-      });
+      .catch((error) => console.error(error));
   };
+
   return (
     <div className="h-[800px] flex justify-center items-center">
       <div className="w-96 p-7">
-        <h1 className="text-xl text-center">Login</h1>
+        <h1 className="text-xl text-center">Sign Up</h1>
         <form onSubmit={handleSubmit(handleLogin)}>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Name</span>
+            </label>
+            <input
+              type="text"
+              {...register("name", {
+                required: "Name is required",
+              })}
+              className="input input-bordered w-full max-w-xs"
+            />
+            {errors.name && (
+              <p className="text-red-600">{errors.name?.message}</p>
+            )}
+          </div>
           <div className="form-control w-full max-w-xs">
             <label className="label">
               <span className="label-text">Email</span>
@@ -58,12 +69,14 @@ const Login = () => {
                   value: 6,
                   message: "Password must be 6 characters or longer",
                 },
+                pattern: {
+                  value: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])/,
+                  message:
+                    "Password must have uppercase, number and special characters",
+                },
               })}
               className="input input-bordered w-full max-w-xs"
             />
-            <label className="label">
-              <span className="label-text">Forget Password</span>
-            </label>
             {errors.password && (
               <p className="text-red-600">{errors.password?.message}</p>
             )}
@@ -71,18 +84,14 @@ const Login = () => {
 
           <input
             type="submit"
-            className="btn btn-accent w-full mt-6"
-            value="Login"
+            className="btn btn-accent w-full max-w-xs mt-6"
+            value="Sign UP"
           />
-          <div>
-            {loginError && <p className="text-red-600">{loginError}</p>}
-          </div>
         </form>
-
         <p className="mt-4">
-          New to Doctors Portal{" "}
-          <Link className="text-secondary" to="/signup">
-            Create new Account
+          Already have an account{" "}
+          <Link className="text-secondary" to="/login">
+            Please Login
           </Link>
         </p>
         <div className="divider">OR</div>
@@ -92,4 +101,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

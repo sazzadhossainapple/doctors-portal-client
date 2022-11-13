@@ -1,4 +1,5 @@
 import Appoinment from "../../pages/Appoinment/Appoinment/Appoinment";
+import SignUp from "../../pages/SignUp/SignUp";
 
 const { createBrowserRouter } = require("react-router-dom");
 const { default: Mian } = require("../../layout/Mian");
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
+      { path: "/signup", element: <SignUp /> },
       { path: "/appointment", element: <Appoinment /> },
     ],
   },
