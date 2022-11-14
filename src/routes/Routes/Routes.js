@@ -1,5 +1,7 @@
 import Appoinment from "../../pages/Appoinment/Appoinment/Appoinment";
+import Dashboard from "../../pages/Dashboard/Dashboard/Dashboard";
 import SignUp from "../../pages/SignUp/SignUp";
+import PrivateRoutes from "../PrivateRoutes/PrivateRoutes";
 
 const { createBrowserRouter } = require("react-router-dom");
 const { default: Mian } = require("../../layout/Mian");
@@ -16,5 +18,13 @@ export const router = createBrowserRouter([
       { path: "/signup", element: <SignUp /> },
       { path: "/appointment", element: <Appoinment /> },
     ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <Dashboard />
+      </PrivateRoutes>
+    ),
   },
 ]);

@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider/AuthProvider";
 
@@ -10,11 +11,32 @@ const SignUp = () => {
     handleSubmit,
   } = useForm();
 
-  const { createUser } = useContext(AuthContext);
+  const { createUser, updateUser, googleSignIn } = useContext(AuthContext);
+  const [signUpError, setSignUpError] = useState("");
 
   const handleLogin = (data) => {
-    console.log(data);
+    setSignUpError("");
     createUser(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+
+        toast("User Created Successfully.");
+        const userInfo = {
+          displayName: data.name,
+        };
+
+        updateUser(userInfo)
+          .then(() => {})
+          .catch((error) => console.error(error));
+      })
+      .catch((error) => {
+        console.error(error);
+        setSignUpError(error.message);
+      });
+  };
+  const handleGoogleSignIn = () => {
+    googleSignIn()
       .then((result) => {
         const user = result.user;
         console.log(user);
@@ -87,6 +109,9 @@ const SignUp = () => {
             className="btn btn-accent w-full max-w-xs mt-6"
             value="Sign UP"
           />
+          <div>
+            {signUpError && <p className="text-red-600">{signUpError}</p>}
+          </div>
         </form>
         <p className="mt-4">
           Already have an account{" "}
@@ -95,7 +120,9 @@ const SignUp = () => {
           </Link>
         </p>
         <div className="divider">OR</div>
-        <button className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
+        <button onClick={handleGoogleSignIn} className="btn btn-outline w-full">
+          CONTINUE WITH GOOGLE
+        </button>
       </div>
     </div>
   );
