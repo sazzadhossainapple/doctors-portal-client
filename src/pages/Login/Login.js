@@ -18,6 +18,7 @@ const Login = () => {
 
   const [loginError, setLoginError] = useState("");
 
+  // handle login
   const handleLogin = (data) => {
     setLoginError("");
     signIn(data.email, data.password)
@@ -32,6 +33,7 @@ const Login = () => {
       });
   };
 
+  // google sign in
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then((result) => {
@@ -41,6 +43,18 @@ const Login = () => {
       })
       .catch((error) => console.error(error));
   };
+
+  // // reset password
+
+  // const handleReset = () => {
+  //   console.log(userEmail);
+
+  //   // resetPassword(userEmail)
+  //   //   .then(() => {
+  //   //     toast.success("Reset link has been sent, please check email");
+  //   //   })
+  //   //   .catch((err) => console.error(err));
+  // };
 
   return (
     <div className="h-[800px] flex justify-center items-center">
@@ -78,7 +92,9 @@ const Login = () => {
               className="input input-bordered w-full max-w-xs"
             />
             <label className="label">
-              <span className="label-text">Forget Password</span>
+              <Link to="/forgetpassword" className="label-text hover:underline">
+                Forget Password
+              </Link>
             </label>
             {errors.password && (
               <p className="text-red-600">{errors.password?.message}</p>
