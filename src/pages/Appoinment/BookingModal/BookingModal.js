@@ -1,8 +1,12 @@
 import { format } from "date-fns/esm";
-import React from "react";
+import React, { useContext } from "react";
+import toast from "react-hot-toast";
+import { AuthContext } from "../../../context/AuthProvider/AuthProvider";
 
-const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
-  const { name, slots } = treatment;
+const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
+  const { user } = useContext(AuthContext);
+
+  const { name: treatmentName, slots } = treatment;
   const date = format(selectedDate, "PP");
 
   const handleBooking = (e) => {
@@ -15,14 +19,31 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
     const phone = form.phone.value;
     const booking = {
       appointmentDate: date,
-      treatment: name,
+      treatment: treatmentName,
       patient: name,
       slot,
       email,
       phone,
     };
-    console.log(booking);
-    setTreatment(null);
+
+    fetch("http://localhost:5000/bookings", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          console.log(data);
+          setTreatment(null);
+          toast.success("Booking Confirmed");
+          refetch();
+        } else {
+          toast.error(data.message);
+        }
+      });
   };
   return (
     <>
@@ -35,7 +56,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
           >
             ✕
           </label>
-          <h3 className="text-lg font-bold">{name}</h3>
+          <h3 className="text-lg font-bold">{treatmentName}</h3>
           <form
             onSubmit={handleBooking}
             className="grid grid-cols-1 gap-3 mt-8"
@@ -56,12 +77,16 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
             <input
               type="text"
               name="name"
+              defaultValue={user?.displayName}
+              disabled
               placeholder="Name"
               className="input input-bordered w-full"
             />
             <input
               type="email"
               name="email"
+              defaultValue={user?.email}
+              disabled
               placeholder="Email Address"
               className="input input-bordered w-full"
             />
