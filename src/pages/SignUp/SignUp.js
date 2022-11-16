@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider/AuthProvider";
+import useToken from "../../hooks/useToken";
 
 const SignUp = () => {
   const {
@@ -13,9 +14,16 @@ const SignUp = () => {
 
   const { createUser, updateUser, googleSignIn } = useContext(AuthContext);
   const [signUpError, setSignUpError] = useState("");
+  const [createUserEmail, setCreateUserEmail] = useState("");
+  const [token] = useToken(createUserEmail);
   const navigate = useNavigate();
 
-  const handleLogin = (data) => {
+  if (token) {
+    navigate("/");
+  }
+
+  //sign up
+  const handleSignUP = (data) => {
     setSignUpError("");
     createUser(data.email, data.password)
       .then((result) => {
@@ -29,7 +37,7 @@ const SignUp = () => {
 
         updateUser(userInfo)
           .then(() => {
-            navigate("/");
+            saveUser(data.name, data.email);
           })
           .catch((error) => console.error(error));
       })
@@ -38,6 +46,26 @@ const SignUp = () => {
         setSignUpError(error.message);
       });
   };
+
+  // savedata
+  const saveUser = (name, email) => {
+    const user = { name, email };
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setCreateUserEmail(email);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  // google signIn
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then((result) => {
@@ -51,7 +79,7 @@ const SignUp = () => {
     <div className="h-[800px] flex justify-center items-center">
       <div className="w-96 p-7">
         <h1 className="text-xl text-center">Sign Up</h1>
-        <form onSubmit={handleSubmit(handleLogin)}>
+        <form onSubmit={handleSubmit(handleSignUP)}>
           <div className="form-control w-full max-w-xs">
             <label className="label">
               <span className="label-text">Name</span>

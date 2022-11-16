@@ -1,5 +1,7 @@
+import DashboardLayout from "../../layout/DashboardLayout";
 import Appoinment from "../../pages/Appoinment/Appoinment/Appoinment";
-import Dashboard from "../../pages/Dashboard/Dashboard/Dashboard";
+import AllUsers from "../../pages/Dashboard/AllUsers/AllUsers";
+
 import MyAppoinment from "../../pages/Dashboard/MyAppoinment/MyAppoinment";
 
 import ForgetPassword from "../../pages/Login/ForgetPassword";
@@ -27,37 +29,12 @@ export const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <PrivateRoutes>
-        <Dashboard></Dashboard>
+        <DashboardLayout />
       </PrivateRoutes>
     ),
-
-    // path: "/dashboard",
-    // element: <DashboardLayout></DashboardLayout>,
-    // children: [
-    //   {
-    //     path: "/dashboard",
-    //     element: (
-    //       <PrivateRoutes>
-    //         <Dashboard />
-    //       </PrivateRoutes>
-    //     ),
-    //   },
-    //   {
-    //     path: "/myapponitment",
-    //     element: (
-    //       <PrivateRoutes>
-    //         <MyAppoinment></MyAppoinment>
-    //       </PrivateRoutes>
-    //     ),
-    //   },
-    // ],
-  },
-  {
-    path: "/myapponitment",
-    element: (
-      <PrivateRoutes>
-        <MyAppoinment></MyAppoinment>
-      </PrivateRoutes>
-    ),
+    children: [
+      { path: "/dashboard", element: <MyAppoinment /> },
+      { path: "/dashboard/users", element: <AllUsers /> },
+    ],
   },
 ]);
