@@ -64,13 +64,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/payment/:id",
-        element: (
-          <AdminRoutes>
-            <Payment />
-          </AdminRoutes>
-        ),
+        element: <Payment />,
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/bookings/${params.id}`),
+          fetch(
+            `https://doctors-portal-server-sandy.vercel.app/bookings/${params.id}`
+          ),
       },
     ],
   },
